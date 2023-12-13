@@ -82,18 +82,10 @@ int main( int argc, char** argv )
 
     marker.lifetime = ros::Duration();
 
-    /*while (marker_pub.getNumSubscribers() < 1)
-    {
-      if (!ros::ok())
-      {
-        return 0;
-      }
-      ROS_WARN_ONCE("Please create a subscriber to the marker");
-      sleep(1);
-    }*/
-
     ros::spinOnce();
 
+    // Check if state equal pickup, add new maker with position set by user
+    // Check if robot reach maker, waiting 5s and change state to carry
     if (state == PICKUP) {
       marker.action = visualization_msgs::Marker::ADD;
       marker.pose.position.x = pickUpPos[0];
@@ -105,6 +97,8 @@ int main( int argc, char** argv )
         state = CARRY;
       }
     }
+    // Check if state equal carry, remove the first maker
+    // after that check robot reach drop zone or not, if yes change state to drop
     else if (state == CARRY) {
       marker.action = visualization_msgs::Marker::DELETE;
       marker.pose.position.x = dropOffPos[0];
@@ -115,6 +109,7 @@ int main( int argc, char** argv )
         state = DROP;
       }
     }
+    // Otherwise, add new maker to visualize to make sure the maker is drop
     else /* state == DROP */ {
       marker.action = visualization_msgs::Marker::ADD;
       marker.pose.position.x = dropOffPos[0];
