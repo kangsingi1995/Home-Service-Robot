@@ -31,7 +31,7 @@ Combining these packages, the Home Service Robot project achieves a comprehensiv
 
 # Follow all steps below to build this project:
 1. Git clone my project.
-   ```git clone ```
+   ```git clone https://github.com/kangsingi1995/Home-Service-Robot.git ```
 2. Within your home directory, execute the following:
 Note Execute the following commands in the workspace terminal to set it up for the project:
 ```
@@ -55,3 +55,19 @@ rosdep -i install turtlebot_gazebo
 catkin_make
 source devel/setup.bash
 ```
+3. Go to the folder src/script to run a test on each module
+   ``` cd src/script ```
+   *Make sure all files *.sh had permission
+   - in negative case: ``` chmod +x *.sh ```
+   - Run test file
+     ``` ./test_slam.sh ``` => Test slam
+     
+     ``` ./test_navigation.sh ``` => test navigation
+     
+     ``` ./add_markers.sh ``` => Test add maker
+     
+     ``` ./pick_objects.sh ``` => Test pick object
+     
+     ``` ./home_service.sh ``` => combine all service of robot and run
+     
+5. Verify the result with Rviz and Gazebo
