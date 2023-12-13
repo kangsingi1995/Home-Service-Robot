@@ -21,11 +21,19 @@ double distToCurrentPos(double goalPos[2])
   return sqrt(dx*dx + dy*dy);
 }
 
+/* /brief: Calcute distance of robot with pick up zone
+* /detail return true if the distance of robot with pick-up zone lower than 0.2
+*         Otherwise is false
+*/
 bool reach_pick_up()
 {
   return distToCurrentPos(pickUpPos) < 0.2;
 }
 
+/* /brief: Calcute distance of robot with drop-out zone
+* /detail return true if the distance of robot with drop-out zone lower than 0.2
+*         Otherwise is false
+*/
 bool reach_drop_zone()
 {
   return distToCurrentPos(dropOffPos) < 0.2;
