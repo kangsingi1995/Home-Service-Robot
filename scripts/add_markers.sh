@@ -27,3 +27,9 @@ sleep 15 # keeping large to enable visualization
 xterm -e "cd $(pwd)/../..;
 source devel/setup.bash;
 rosrun add_markers add_markers_node" &
+
+# launch teleop_keyboard for manual control
+xterm -e "cd $(pwd)/../..;
+source devel/setup.bash;
+roslaunch turtlebot_teleop keyboard_teleop.launch" &
+
