@@ -26,10 +26,6 @@ sleep 15 # keeping large to enable visualization
 # launch add_markers node => add gold marker and deliver
 xterm -e "cd $(pwd)/../..;
 source devel/setup.bash;
-rosrun add_markers add_markers_node" &
+rosrun add_markers add_markers_node_test" &
 
-# launch teleop_keyboard for manual control
-xterm -e "cd $(pwd)/../..;
-source devel/setup.bash;
-roslaunch turtlebot_teleop keyboard_teleop.launch" &
 
