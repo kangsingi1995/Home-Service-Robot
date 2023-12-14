@@ -21,25 +21,34 @@ void get_current_pose(const nav_msgs::Odometry::ConstPtr& msg)
 }
 
 // Function to calculate Manhattan Distance between two points
-double manhattanDistance(double x1, double y1, double x2, double y2)
+double EulerDistance(double x1, double y1, double x2, double y2)
 {
-  return std::abs(x1 - x2) + std::abs(y1 - y2);
+  return std::hypot(x1 - x2, y1 - y2) < 0.2;
 }
 
-bool CheckState_OfRobot()
+State CheckState_OfRobot(State state_local)
 {
 	State stateRobot;
 	
-	if(state == PICKUP && manhattanDistance(pose[0], pose[1], pickUpPos[0], pickUpPos[1])< 0.2)
+	if(EulerDistance(pose[0], pose[1], pickUpPos[0], pickUpPos[1]))
 	{
-		stateRobot = CARRY;
+		if(state_local == PICKUP)
+		{
+			sleep(5);
+        		ROS_INFO("Carrying to drop zone ... ");
+			stateRobot = CARRY;
+		}
+        	
 	}
-	else if(state == CARRY && manhattanDistance(pose[0], pose[1], dropOffPos[0], dropOffPos[1])< 0.2)
+	else if(EulerDistance(pose[0], pose[1], dropOffPos[0], dropOffPos[1]))
 	{
-		stateRobot = DROP;
+		if (state_local == CARRY)
+		{
+			ROS_INFO("Reach to drop zone ... ");
+			stateRobot = DROP;
+		}
+
 	}
-	else
-		stateRobot = PICKUP;
 	return stateRobot;
 }
 
@@ -92,28 +101,31 @@ int main( int argc, char** argv )
 
     ros::spinOnce();
 	
-	switch (state)
+    switch (state)
     {
-	// Check state equal pickup, add new maker with position set by user
-    // Check if robot reach maker, waiting 5s and change state to carry
+      // Check state equal pickup, add new maker with position set by user
+      // Check if robot reach maker, waiting 5s and change state to carry
       case PICKUP:
         marker.action = visualization_msgs::Marker::ADD;
         marker.pose.position.x = pickUpPos[0];
         marker.pose.position.y = pickUpPos[1];
         marker_pub.publish(marker);
-		state = CheckState_OfRobot();
+	state = CheckState_OfRobot(state);
         break;
-    // Check state equal carry, remove the first maker
-    // after that check robot reach drop zone or not, if yes change state to drop
+      // Check state equal carry, remove the first maker
+      // after that check robot reach drop zone or not, if yes change state to drop
       case CARRY:
+	ROS_INFO("Carry ... ");
         marker.action = visualization_msgs::Marker::DELETE;
         marker.pose.position.x = dropOffPos[0];
         marker.pose.position.y = dropOffPos[1];
         marker_pub.publish(marker);
-        state = CheckState_OfRobot();
+        state = CheckState_OfRobot(state);
+	ROS_INFO("The value of 'a' is: %d", state);
         break;
 	  // add new maker to visualize to make sure the maker is drop
       case DROP: 
+	ROS_INFO("Finish ... ");
         marker.action = visualization_msgs::Marker::ADD;
         marker.pose.position.x = dropOffPos[0];
         marker.pose.position.y = dropOffPos[1];
